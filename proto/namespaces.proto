@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package oceannik;
+
+option go_package = "github.com/oceannik/oceannik/proto;pb";
+
+service NamespaceService {
+  rpc ListNamespaces(ListNamespacesRequest) returns (stream Namespace) {}
+
+  rpc GetNamespace(GetNamespaceRequest) returns (Namespace) {}
+
+  rpc SetNamespace(SetNamespaceRequest) returns (Namespace) {}
+}
+
+message Namespace {
+  string name = 1;
+  string description = 2;
+}
+
+message ListNamespacesRequest {}
+
+message GetNamespaceRequest { string name = 1; }
+
+message SetNamespaceRequest {
+  string name = 1;
+  string description = 2;
+  bool overwrite_if_exists = 3;
+}

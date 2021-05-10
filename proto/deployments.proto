@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package oceannik;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/oceannik/oceannik/proto;pb";
+
+service DeploymentService {
+  rpc ListDeployments(ListDeploymentsRequest) returns (stream Deployment) {}
+
+  rpc GetDeployment(GetDeploymentRequest) returns (Deployment) {}
+
+  rpc GetDeploymentLogs(GetDeploymentLogsRequest)
+      returns (stream DeploymentLogChunk) {}
+
+  rpc ScheduleDeployment(ScheduleDeploymentRequest) returns (Deployment) {}
+}
+
+message Deployment {
+  enum DeploymentStatus {
+    UNSPECIFIED = 0;
+    SCHEDULED = 1;
+    STARTED = 2;
+    EXITED_SUCCESS = 3;
+    EXITED_FAILURE = 4;
+  }
+  string identifier = 1;
+  string namespace = 2;
+  string project = 3;
+  DeploymentStatus status = 4;
+  google.protobuf.Timestamp scheduled_at = 5;
+  google.protobuf.Timestamp started_at = 6;
+  google.protobuf.Timestamp exited_at = 7;
+}
+
+message DeploymentLogChunk { string chunk = 1; }
+
+message ListDeploymentsRequest { string namespace = 1; }
+
+message GetDeploymentRequest { string identifier = 1; }
+
+message ScheduleDeploymentRequest {
+  string namespace = 1;
+  string project = 2;
+}
+
+message GetDeploymentLogsRequest { string identifier = 1; }
