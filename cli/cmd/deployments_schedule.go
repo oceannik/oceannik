@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -16,7 +18,18 @@ import (
 var deploymentsScheduleCmd = &cobra.Command{
 	Use:   "schedule",
 	Short: "schedule a new deployment",
-	Run:   deploymentsScheduleCmdRun,
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) > 1 {
+			return errors.New("this command accepts only one argument: the name of the project to deploy")
+		} else if len(args) == 1 {
+			if utils.IsValidIdentifierString(args[0]) {
+				return nil
+			}
+			return fmt.Errorf("invalid characters used in argument: %s", args[0])
+		}
+		return errors.New("the name of the project to deploy needs to be given")
+	},
+	Run: deploymentsScheduleCmdRun,
 }
 
 func deploymentsScheduleCmdRun(cmd *cobra.Command, args []string) {

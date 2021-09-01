@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -15,8 +17,19 @@ import (
 
 var deploymentsGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: "get a deployment or deployments",
-	Run:   deploymentsGetCmdRun,
+	Short: "get a list of deployments or a specific deployment by its id",
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) > 1 {
+			return errors.New("this command accepts only one argument: the id of the deployment to get")
+		} else if len(args) == 1 {
+			if utils.IsValidIdentifierString(args[0]) {
+				return nil
+			}
+			return fmt.Errorf("invalid characters used in argument: %s", args[0])
+		}
+		return nil
+	},
+	Run: deploymentsGetCmdRun,
 }
 
 func deploymentsGetCmdRun(cmd *cobra.Command, args []string) {

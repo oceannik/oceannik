@@ -5,16 +5,22 @@ import (
 	"log"
 	"os"
 
+	"github.com/oceannik/oceannik/cli/connectors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 var (
-	configDir         string
-	namespace         string
-	customHost        string
-	customPort        int
+	configDir  string
+	namespace  string
+	customHost string
+	customPort int
+	noTLS      bool
+)
+
+var (
 	defaultTimeFormat = "Jan _2, 2006 15:04:05"
+	agentConnector    = connectors.AgentConnector{}
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -41,6 +47,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&namespace, "namespace", "n", "default", "namespace to use for managing resources on the Agent")
 	rootCmd.PersistentFlags().StringVar(&customHost, "host", "", "host to connect to/host to run the server on")
 	rootCmd.PersistentFlags().IntVar(&customPort, "port", 5000, "port to connect to/port to run the server on")
+	rootCmd.PersistentFlags().BoolVar(&noTLS, "no-tls", false, "disable TLS authentication")
 
 	rootCmd.PersistentFlags()
 }
@@ -70,6 +77,7 @@ func initConfig() {
 	viper.SetDefault("agent.debug_server.host", "0.0.0.0")
 	viper.SetDefault("agent.debug_server.port", 6060)
 	viper.SetDefault("agent.debug_server.enable", false)
+	viper.SetDefault("agent.deployments_queue_max_capacity", 42)
 	viper.SetDefault("agent.database_path", fmt.Sprintf("%s/database.sqlite3", oceannikConfigRoot))
 	viper.SetDefault("agent.runner_base_image", "oceannik/runner-base-image:latest")
 	// viper.SetDefault("agent.runner_base_image", "ghcr.io/oceannik/runner-base-image:latest")
@@ -91,13 +99,6 @@ func initConfig() {
 	viper.SetDefault("client.certs.ca_cert_path", fmt.Sprintf("%s/oceannik_ca/oceannik_ca.crt", oceannikConfigCerts))
 	viper.SetDefault("client.certs.cert_path", fmt.Sprintf("%s/oceannik_client.crt", oceannikConfigCerts))
 	viper.SetDefault("client.certs.key_path", fmt.Sprintf("%s/oceannik_client.key", oceannikConfigCerts))
-
-	// viper.SetDefault("agent.certs.ca_cert_path", "tmp/ca-cert.pem")
-	// viper.SetDefault("agent.certs.cert_path", "tmp/server-cert.pem")
-	// viper.SetDefault("agent.certs.key_path", "tmp/server-key.pem")
-	// viper.SetDefault("client.certs.ca_cert_path", "tmp/ca-cert.pem")
-	// viper.SetDefault("client.certs.cert_path", "tmp/client-cert.pem")
-	// viper.SetDefault("client.certs.key_path", "tmp/client-key.pem")
 
 	viper.AutomaticEnv()
 

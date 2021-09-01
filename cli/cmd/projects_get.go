@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -17,8 +19,19 @@ import (
 
 var projectsGetCmd = &cobra.Command{
 	Use:   "get",
-	Short: "get a project or projects",
-	Run:   projectsGetCmdRun,
+	Short: "get a list of projects or a project by its name",
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) > 1 {
+			return errors.New("this command accepts only one argument: the name of the project to get")
+		} else if len(args) == 1 {
+			if utils.IsValidIdentifierString(args[0]) {
+				return nil
+			}
+			return fmt.Errorf("invalid characters used in argument: %s", args[0])
+		}
+		return nil
+	},
+	Run: projectsGetCmdRun,
 }
 
 func projectsGetCmdRun(cmd *cobra.Command, args []string) {
