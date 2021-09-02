@@ -32,10 +32,11 @@ func InitData(db *gorm.DB) {
 
 	log.Printf("[Database] Creating the default project...")
 	defaultProject := Project{
-		Name:          "example-project",
-		Description:   "Example project that deploys `example-test-app`",
-		RepositoryUrl: "https://github.com/oceannik/examples",
-		ConfigPath:    "example-project/oceannik.yml",
+		Name:             "example-project",
+		Description:      "Example project that deploys `example-test-app`",
+		RepositoryUrl:    "https://github.com/oceannik/examples",
+		RepositoryBranch: "main",
+		ConfigPath:       "example-project/oceannik.yml",
 	}
 	db.Create(&defaultProject)
 

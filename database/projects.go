@@ -4,19 +4,20 @@ import "gorm.io/gorm"
 
 type Project struct {
 	gorm.Model
-	Name          string `gorm:"uniqueIndex"`
-	Description   string
-	RepositoryUrl string
-	// RepositoryBranch string
-	ConfigPath string
+	Name             string `gorm:"uniqueIndex"`
+	Description      string
+	RepositoryUrl    string
+	RepositoryBranch string
+	ConfigPath       string
 }
 
-func CreateProject(db *gorm.DB, name string, desc string, repo_url string, config_path string) (*Project, *gorm.DB) {
+func CreateProject(db *gorm.DB, name string, desc string, repo_url string, repo_branch string, config_path string) (*Project, *gorm.DB) {
 	project := Project{
-		Name:          name,
-		Description:   desc,
-		RepositoryUrl: repo_url,
-		ConfigPath:    config_path,
+		Name:             name,
+		Description:      desc,
+		RepositoryUrl:    repo_url,
+		RepositoryBranch: repo_branch,
+		ConfigPath:       config_path,
 	}
 	result := db.Create(&project)
 

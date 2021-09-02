@@ -60,10 +60,10 @@ func projectsSetCmdRun(cmd *cobra.Command, args []string) {
 		if cmd.Flags().Lookup("repository-url").Changed {
 			req.RepositoryUrl = projectsSetCmdRepositoryUrl
 		}
-		// if cmd.Flags().Lookup("repository-branch").Changed {
-		// 	req.RepositoryBranch = projectsSetCmdRepositoryBranch
-		// }
-		if cmd.Flags().Lookup("oceannik-path").Changed {
+		if cmd.Flags().Lookup("repository-branch").Changed {
+			req.RepositoryBranch = projectsSetCmdRepositoryBranch
+		}
+		if cmd.Flags().Lookup("oceannik-config").Changed {
 			req.ConfigPath = projectsSetCmdConfigPath
 		}
 	} else {
@@ -72,6 +72,7 @@ func projectsSetCmdRun(cmd *cobra.Command, args []string) {
 			Name:              args[0],
 			Description:       projectsSetCmdDescription,
 			RepositoryUrl:     projectsSetCmdRepositoryUrl,
+			RepositoryBranch:  projectsSetCmdRepositoryBranch,
 			ConfigPath:        projectsSetCmdConfigPath,
 			OverwriteIfExists: projectsSetCmdForce,
 		}
@@ -82,8 +83,8 @@ func projectsSetCmdRun(cmd *cobra.Command, args []string) {
 		log.Fatalf("Could not create new project: %v", err)
 	}
 
-	table := utils.NewTable(os.Stdout, []string{"Name", "Description", "Repository URL", "Config Path"})
-	table.Append([]string{project.GetName(), project.GetDescription(), project.GetRepositoryUrl(), project.GetConfigPath()})
+	table := utils.NewTable(os.Stdout, []string{"Name", "Description", "Repository URL", "Branch", "Config Path"})
+	table.Append([]string{project.GetName(), project.GetDescription(), project.GetRepositoryUrl(), project.GetRepositoryBranch(), project.GetConfigPath()})
 	table.Render()
 }
 

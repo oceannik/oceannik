@@ -52,7 +52,7 @@ func projectsGetCmdRun(cmd *cobra.Command, args []string) {
 	}
 
 	printedAny := false
-	table := utils.NewTable(os.Stdout, []string{"Name", "Description", "Repository URL", "Config Path"})
+	table := utils.NewTable(os.Stdout, []string{"Name", "Description", "Repository URL", "Branch", "Config Path"})
 
 	for {
 		project, err := stream.Recv()
@@ -63,7 +63,7 @@ func projectsGetCmdRun(cmd *cobra.Command, args []string) {
 			log.Fatalf("%v: %v", client, err)
 		}
 		printedAny = true
-		table.Append([]string{project.GetName(), project.GetDescription(), project.GetRepositoryUrl(), project.GetConfigPath()})
+		table.Append([]string{project.GetName(), project.GetDescription(), project.GetRepositoryUrl(), project.GetRepositoryBranch(), project.GetConfigPath()})
 	}
 
 	if !printedAny {
