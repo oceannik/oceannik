@@ -13,6 +13,8 @@ func TestValidator(t *testing.T) {
 		{"testproject", true},
 		{"test-project", true},
 		{"test_project", true},
+		{"test1project", true},
+		{"test9project", true},
 		{"test project", false},
 		{" testproject", false},
 		{"testproject ", false},
