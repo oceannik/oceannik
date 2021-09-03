@@ -7,15 +7,15 @@ before:
     # you may remove this if you don't need go generate
     - go generate ./...
 builds:
-  - id: "ocean"
-    main: "./cli"
-    binary: "ocean"
+  - id: 'ocean'
+    main: './cli'
+    binary: 'ocean'
     env:
-      - CGO_ENABLED=0
+      - CGO_ENABLED=1
     goos:
       - linux
-      - windows
-      - darwin
+    goarch:
+      - amd64
 archives:
   - replacements:
       darwin: Darwin
@@ -23,10 +23,13 @@ archives:
       windows: Windows
       386: i386
       amd64: x86_64
+    format: binary
 release:
   github:
-      owner: oceannik
-      name: oceannik
+    owner: oceannik
+    name: oceannik
+  disable: false
+  draft: false
 checksum:
   name_template: 'checksums.txt'
 snapshot:
