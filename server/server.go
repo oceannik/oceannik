@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/docker/docker/api/types/mount"
 	"github.com/oceannik/oceannik/auth"
 	"github.com/oceannik/oceannik/database"
 	pb "github.com/oceannik/oceannik/proto"
@@ -32,8 +33,13 @@ func getContainerNameForDeploymentId(id uint) string {
 func deploymentWorker(db *gorm.DB, requestedDeploymentIds <-chan uint) {
 	runnerCertsPath := viper.GetString("agent.runner.certs_path")
 	containerImage := viper.GetString("agent.runner.base_image")
-	containerVolumes := map[string]struct{}{
-		fmt.Sprintf("%s:/usr/oceannik/user-certs:ro", runnerCertsPath): struct{}{},
+	containerVolumes := []mount.Mount{
+		{
+			Type:     mount.TypeBind,
+			Source:   runnerCertsPath,
+			Target:   "/usr/oceannik/user-certs",
+			ReadOnly: true,
+		},
 	}
 	defaultDeploymentStrategy := "blue-green"
 
@@ -50,8 +56,8 @@ func deploymentWorker(db *gorm.DB, requestedDeploymentIds <-chan uint) {
 			break
 		}
 
-		project, result := database.GetProjectByID(db, deployment.ProjectID)
-		if result != nil {
+		project, result := database.GetProjectByID(db, deployment.Project.ID)
+		if result.Error != nil {
 			fmt.Fprintf(os.Stderr, "a project could not be fetched: %s", result.Error)
 			break
 		}

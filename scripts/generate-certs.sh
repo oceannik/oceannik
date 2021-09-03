@@ -21,9 +21,13 @@ CLIENT_KEY=${CERTS_OUTPUT_PATH}/oceannik_client.key
 CLIENT_CERT=${CERTS_OUTPUT_PATH}/oceannik_client.crt
 CLIENT_CSR=${CERTS_OUTPUT_PATH_REQUESTS}/oceannik_client.csr
 
+CLIENT_PIPELINE_PFX=${CERTS_OUTPUT_PATH}/oceannik_client_pipeline.pfx
+CLIENT_PIPELINE_PFX_FAKE_PASSWORD=oceannik # not really for security, just for convenience
+
 RUNNER_KEY=${CERTS_OUTPUT_PATH_RUNNER}/oceannik_runner.key
 RUNNER_CERT=${CERTS_OUTPUT_PATH_RUNNER}/oceannik_runner.crt
 RUNNER_CSR=${CERTS_OUTPUT_PATH_REQUESTS}/oceannik_runner.csr
+
 
 # Create all the required directories
 
@@ -93,6 +97,15 @@ openssl x509 -req \
     -CAcreateserial \
     -days ${CERTS_VALID_FOR_DAYS} \
     -extfile ${CERTS_EXT_CONFIG}
+
+# Create a pfx file for authentication of the client in CI/CD pipelines
+
+openssl pkcs12 \
+    -in ${CLIENT_CERT} \
+    -inkey ${CLIENT_KEY} \
+    -certfile ${OCEANNIK_CA_CERT} \
+    -export -out ${CLIENT_PIPELINE_PFX} \
+    -passout pass:${CLIENT_PIPELINE_PFX_FAKE_PASSWORD}
 
 # Copy certificates for the Runner Engine
 

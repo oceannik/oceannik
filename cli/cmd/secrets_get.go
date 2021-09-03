@@ -52,7 +52,7 @@ func secretsGetCmdRun(cmd *cobra.Command, args []string) {
 	defer cancel()
 
 	printedAny := false
-	table := utils.NewTable(os.Stdout, []string{"Namespace", "Key", "Value", "Description", "Kind"})
+	table := utils.NewTable(os.Stdout, []string{"Key", "Value", "Description", "Kind"})
 
 	if len(args) > 0 {
 		// get a specific secret by key
@@ -93,7 +93,7 @@ func secretsGetCmdGetSingle(client pb.SecretServiceClient, ctx context.Context, 
 		secretValue = secret.GetValue()
 	}
 
-	table.Append([]string{secret.GetNamespace(), secret.GetKey(), secretValue, secret.GetDescription(), secret.GetKind().String()})
+	table.Append([]string{secret.GetKey(), secretValue, secret.GetDescription(), secret.GetKind().String()})
 
 	if secretsGetCmdSaveValueToFilePath != "" {
 		data := []byte(secret.GetValue())
@@ -133,7 +133,7 @@ func secretsGetCmdListAll(client pb.SecretServiceClient, ctx context.Context, ta
 			secretValue = secret.GetValue()
 		}
 
-		table.Append([]string{secret.GetNamespace(), secret.GetKey(), secretValue, secret.GetDescription(), secret.GetKind().String()})
+		table.Append([]string{secret.GetKey(), secretValue, secret.GetDescription(), secret.GetKind().String()})
 	}
 	return printedAny
 }

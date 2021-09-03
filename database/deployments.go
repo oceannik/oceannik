@@ -41,7 +41,7 @@ func CreateDeployment(db *gorm.DB, namespaceName string, projectName string) (*D
 		return nil, result
 	}
 
-	result = db.First(&deployment, &deployment.ID)
+	result = db.Joins("Namespace").Joins("Project").First(&deployment, &deployment.ID)
 	if result.Error != nil {
 		return nil, result
 	}
@@ -62,7 +62,7 @@ func GetDeployments(db *gorm.DB, namespaceName string) (*[]Deployment, *gorm.DB)
 
 func GetDeploymentByID(db *gorm.DB, id uint) (*Deployment, *gorm.DB) {
 	var deployment Deployment
-	result := db.First(&deployment, id)
+	result := db.Joins("Namespace").Joins("Project").First(&deployment, id)
 
 	return &deployment, result
 }

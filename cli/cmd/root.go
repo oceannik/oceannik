@@ -87,6 +87,7 @@ func initConfig() {
 	viper.SetDefault("client.default_namespace", "default")
 	viper.SetDefault("client.agent_host", "localhost")
 	viper.SetDefault("client.agent_port", 5000)
+	viper.SetDefault("client.dial_timeout", 5)
 
 	viper.BindPFlag("agent.host", rootCmd.PersistentFlags().Lookup("host"))
 	viper.BindPFlag("agent.port", rootCmd.PersistentFlags().Lookup("port"))

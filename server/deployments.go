@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"time"
 
 	"github.com/oceannik/oceannik/database"
 	pb "github.com/oceannik/oceannik/proto"
@@ -68,7 +69,12 @@ func (s *DeploymentServiceServer) ScheduleDeployment(ctx context.Context, r *pb.
 
 	if deployment.Status == pb.Deployment_SCHEDULED.String() {
 		log.Printf("Schedule deployment %d", deployment.ID)
-		s.runnerChan <- deployment.ID
+		select {
+		case s.runnerChan <- deployment.ID:
+		default:
+			log.Printf("Channel is full, failing the deployment.")
+			database.UpdateDeploymentStatus(s.db, deployment.ID, pb.Deployment_EXITED_FAILURE.String(), time.Time{}, time.Time{})
+		}
 	}
 
 	res := deploymentAsProtobufStruct(deployment)

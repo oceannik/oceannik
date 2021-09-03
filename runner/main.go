@@ -1,7 +1,9 @@
 package runner
 
 type Runner interface {
-	Prepare()
+	ImagePull()
 
-	Run()
+	RunContainer()
+
+	GetContainerLogs()
 }

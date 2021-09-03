@@ -106,8 +106,8 @@ func secretsSetCmdRun(cmd *cobra.Command, args []string) {
 		log.Fatalf("Could not create new secret: %v", err)
 	}
 
-	table := utils.NewTable(os.Stdout, []string{"Namespace", "Key", "Value", "Description", "Kind"})
-	table.Append([]string{secret.GetNamespace(), secret.GetKey(), secret.GetValue(), secret.GetDescription(), secret.GetKind().String()})
+	table := utils.NewTable(os.Stdout, []string{"Key", "Value", "Description", "Kind"})
+	table.Append([]string{secret.GetKey(), secret.GetValue(), secret.GetDescription(), secret.GetKind().String()})
 	table.Render()
 }
 

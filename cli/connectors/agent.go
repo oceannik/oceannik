@@ -3,6 +3,7 @@ package connectors
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/oceannik/oceannik/auth"
 	pb "github.com/oceannik/oceannik/proto"
@@ -12,8 +13,6 @@ import (
 
 type AgentConnector struct {
 	Conn *grpc.ClientConn
-	// Ctx       context.Context
-	// CtxCancel context.CancelFunc
 }
 
 func getServerAddr() string {
@@ -36,29 +35,23 @@ func (ac *AgentConnector) Open() {
 	}
 
 	serverAddr := getServerAddr()
-	log.Printf("[Ocean] Connecting to Agent at %s...", serverAddr)
+	dialTimeout := viper.GetInt("client.dial_timeout")
+	log.Printf("[Ocean] Connecting to Agent at %s (timeout: %d seconds)...", serverAddr, dialTimeout)
 
-	conn, err := grpc.Dial(serverAddr, grpc.WithTransportCredentials(tlsCreds), grpc.WithBlock())
-	// conn, err := grpc.Dial(serverAddr, grpc.WithInsecure(), grpc.WithBlock())
+	conn, err := grpc.Dial(
+		serverAddr,
+		grpc.WithTransportCredentials(tlsCreds),
+		grpc.WithBlock(),
+		grpc.WithTimeout(10*time.Second),
+	)
 	if err != nil {
-		log.Fatalf("gRPC Dial failed: %v", err)
+		log.Fatalf("[Ocean] Could not connect to the Agent! Are you sure the TLS certificates are valid? Error: %v", err)
 	}
 	ac.Conn = conn
-	// defer conn.Close()
-
-	// client := pb.NewNamespaceServiceClient(conn)
-
-	// ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
-	// ac.Ctx = ctx
-	// ac.CtxCancel = cancel
-
-	// log.Printf("Default timeout: %ds", defaultTimeout)
-	// defer cancel()
 }
 
 func (ac *AgentConnector) Close() {
 	ac.Conn.Close()
-	// defer ac.CtxCancel()
 }
 
 func (ac *AgentConnector) GetDeploymentServiceClient() pb.DeploymentServiceClient {

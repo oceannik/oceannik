@@ -25,8 +25,15 @@ func CreateSecret(db *gorm.DB, namespaceName string, key string, value string, d
 		Kind:        kind,
 	}
 
-	// TODO: Add Preloading associations
 	result := db.Create(&secret)
+	if result.Error != nil {
+		return nil, result
+	}
+
+	result = db.Joins("Namespace").First(&secret, &secret.ID)
+	if result.Error != nil {
+		return nil, result
+	}
 
 	return &secret, result
 }
