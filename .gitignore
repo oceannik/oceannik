@@ -2,3 +2,5 @@
 .metals
 bin/
 generated-certs/
+
+dist/
