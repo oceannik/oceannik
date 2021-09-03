@@ -25,21 +25,62 @@ var (
 	databaseInitData = false
 )
 
+func getContainerNameForDeploymentId(id uint) string {
+	return fmt.Sprintf("oceannik_runner.deployment_%d", id)
+}
+
 func deploymentWorker(db *gorm.DB, requestedDeploymentIds <-chan uint) {
+	runnerCertsPath := viper.GetString("agent.runner.certs_path")
+	containerImage := viper.GetString("agent.runner.base_image")
+	containerVolumes := map[string]struct{}{
+		fmt.Sprintf("%s:/usr/oceannik/user-certs:ro", runnerCertsPath): struct{}{},
+	}
+	defaultDeploymentStrategy := "blue-green"
+
 	for deploymentId := range requestedDeploymentIds {
-		// TODO: Refactor
 		log.Printf("[Worker] Got the request to process Deployment with ID: %d", deploymentId)
 
 		startedAt := time.Now()
 		status := pb.Deployment_STARTED.String()
+		database.UpdateDeploymentStatus(db, deploymentId, status, startedAt, time.Time{})
 
-		containerName := fmt.Sprintf("oceannik_runner.deployment_%d", deploymentId)
-		r := runner.DockerRunner{}
-		r.Prepare()
-		r.Run(containerName)
+		deployment, result := database.GetDeploymentByID(db, deploymentId)
+		if result.Error != nil {
+			fmt.Fprintf(os.Stderr, "a deployment could not be fetched: %s", result.Error)
+			break
+		}
+
+		project, result := database.GetProjectByID(db, deployment.ProjectID)
+		if result != nil {
+			fmt.Fprintf(os.Stderr, "a project could not be fetched: %s", result.Error)
+			break
+		}
+
+		containerName := getContainerNameForDeploymentId(deploymentId)
+		containerEnv := []string{
+			fmt.Sprintf("OCEANNIK_DEPLOYMENT_STRATEGY=%s", defaultDeploymentStrategy),
+			fmt.Sprintf("OCEANNIK_PROJECT_ID=%d", project.ID),
+			fmt.Sprintf("OCEANNIK_PROJECT_NAME=%s", project.Name),
+			fmt.Sprintf("OCEANNIK_PROJECT_REPO=%s", project.RepositoryUrl),
+			fmt.Sprintf("OCEANNIK_PROJECT_REPO_BRANCH=%s", project.RepositoryBranch),
+			fmt.Sprintf("OCEANNIK_SERVICE_CONFIG_PATH=%s", project.ConfigPath),
+		}
+
+		runnerEngine := runner.DockerRunner{}
+		pullErr := runnerEngine.ImagePull(containerImage)
+		if pullErr != nil {
+			fmt.Fprintf(os.Stderr, "the base image could not be pulled: %s", pullErr)
+		}
+
+		runErr := runnerEngine.RunContainer(containerName, containerImage, containerEnv, containerVolumes)
+		if runErr != nil {
+			fmt.Fprintf(os.Stderr, "a container created by the Runner Engine has failed: %s", runErr)
+			status = pb.Deployment_EXITED_FAILURE.String()
+		} else {
+			status = pb.Deployment_EXITED_SUCCESS.String()
+		}
 
 		exitedAt := time.Now()
-		status = pb.Deployment_EXITED_SUCCESS.String()
 		database.UpdateDeploymentStatus(db, deploymentId, status, startedAt, exitedAt)
 	}
 }
@@ -72,8 +113,9 @@ func Start(serverPort int, databasePath string, devMode bool, devServerHost stri
 		database.InitData(db)
 	}
 
+	maxCapacity := viper.GetInt("agent.deployments_queue_max_capacity")
 	// Create a worker for processing deployment requests
-	requestedDeploymentIds := make(chan uint, 100)
+	requestedDeploymentIds := make(chan uint, maxCapacity)
 	defer close(requestedDeploymentIds)
 	go deploymentWorker(db, requestedDeploymentIds)
 

@@ -67,8 +67,6 @@ func initConfig() {
 	oceannikConfigCerts := fmt.Sprintf("%s/certs", oceannikConfigRoot)
 
 	viper.AddConfigPath(configDir)
-	viper.AddConfigPath("/etc/oceannik")
-	viper.AddConfigPath(".")
 	viper.SetConfigName(".ocean")
 	viper.SetConfigType("yaml")
 
@@ -79,8 +77,8 @@ func initConfig() {
 	viper.SetDefault("agent.debug_server.enable", false)
 	viper.SetDefault("agent.deployments_queue_max_capacity", 42)
 	viper.SetDefault("agent.database_path", fmt.Sprintf("%s/database.sqlite3", oceannikConfigRoot))
-	viper.SetDefault("agent.runner_base_image", "oceannik/runner-base-image:latest")
-	// viper.SetDefault("agent.runner_base_image", "ghcr.io/oceannik/runner-base-image:latest")
+	viper.SetDefault("agent.runner.base_image", "ghcr.io/oceannik/runner-base-image:latest")
+	viper.SetDefault("agent.runner.certs_path", fmt.Sprintf("%s/oceannik_runner", oceannikConfigCerts))
 
 	viper.SetDefault("agent.certs.ca_cert_path", fmt.Sprintf("%s/oceannik_ca/oceannik_ca.crt", oceannikConfigCerts))
 	viper.SetDefault("agent.certs.cert_path", fmt.Sprintf("%s/oceannik_agent.crt", oceannikConfigCerts))

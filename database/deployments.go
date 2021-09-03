@@ -36,8 +36,15 @@ func CreateDeployment(db *gorm.DB, namespaceName string, projectName string) (*D
 		ScheduledAt: time.Now(),
 	}
 
-	// TODO: Add Preloading associations
 	result := db.Create(&deployment)
+	if result.Error != nil {
+		return nil, result
+	}
+
+	result = db.First(&deployment, &deployment.ID)
+	if result.Error != nil {
+		return nil, result
+	}
 
 	return &deployment, result
 }
@@ -53,8 +60,14 @@ func GetDeployments(db *gorm.DB, namespaceName string) (*[]Deployment, *gorm.DB)
 	return &deployments, result
 }
 
+func GetDeploymentByID(db *gorm.DB, id uint) (*Deployment, *gorm.DB) {
+	var deployment Deployment
+	result := db.First(&deployment, id)
+
+	return &deployment, result
+}
+
 func UpdateDeploymentStatus(db *gorm.DB, id uint, status string, startedAt time.Time, exitedAt time.Time) (*Deployment, *gorm.DB) {
-	// TODO: Refactor
 	var deployment Deployment
 	result := db.First(&deployment, id)
 

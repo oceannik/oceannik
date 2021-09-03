@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/oceannik/oceannik/database"
 	pb "github.com/oceannik/oceannik/proto"
@@ -19,6 +20,18 @@ type DeploymentServiceServer struct {
 	runnerChan chan uint
 }
 
+func deploymentAsProtobufStruct(deployment *database.Deployment) *pb.Deployment {
+	return &pb.Deployment{
+		Identifier:  fmt.Sprint(deployment.ID),
+		Namespace:   deployment.Namespace.Name,
+		Project:     deployment.Project.Name,
+		Status:      pb.Deployment_DeploymentStatus(pb.Deployment_DeploymentStatus_value[deployment.Status]),
+		ScheduledAt: timestamppb.New(deployment.ScheduledAt),
+		StartedAt:   timestamppb.New(deployment.StartedAt),
+		ExitedAt:    timestamppb.New(deployment.ExitedAt),
+	}
+}
+
 func (s *DeploymentServiceServer) ListDeployments(r *pb.ListDeploymentsRequest, stream pb.DeploymentService_ListDeploymentsServer) error {
 	deployments, result := database.GetDeployments(s.db, r.GetNamespace())
 	if result.Error != nil {
@@ -26,21 +39,25 @@ func (s *DeploymentServiceServer) ListDeployments(r *pb.ListDeploymentsRequest, 
 	}
 
 	for _, deployment := range *deployments {
-		res := &pb.Deployment{
-			Identifier:  fmt.Sprint(deployment.ID),
-			Namespace:   deployment.Namespace.Name,
-			Project:     deployment.Project.Name,
-			Status:      pb.Deployment_DeploymentStatus(pb.Deployment_DeploymentStatus_value[deployment.Status]),
-			ScheduledAt: timestamppb.New(deployment.ScheduledAt),
-			StartedAt:   timestamppb.New(deployment.StartedAt),
-			ExitedAt:    timestamppb.New(deployment.ExitedAt),
-		}
+		res := deploymentAsProtobufStruct(&deployment)
 
 		if err := stream.Send(res); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func (s *DeploymentServiceServer) GetDeployment(ctx context.Context, r *pb.GetDeploymentRequest) (*pb.Deployment, error) {
+	id, _ := strconv.Atoi(r.GetIdentifier())
+	deployment, result := database.GetDeploymentByID(s.db, uint(id))
+	if result.Error != nil {
+		return nil, status.Errorf(codes.Internal, "could not fetch deployment: %s", result.Error)
+	}
+
+	res := deploymentAsProtobufStruct(deployment)
+
+	return res, nil
 }
 
 func (s *DeploymentServiceServer) ScheduleDeployment(ctx context.Context, r *pb.ScheduleDeploymentRequest) (*pb.Deployment, error) {
@@ -54,15 +71,7 @@ func (s *DeploymentServiceServer) ScheduleDeployment(ctx context.Context, r *pb.
 		s.runnerChan <- deployment.ID
 	}
 
-	res := &pb.Deployment{
-		Identifier:  fmt.Sprint(deployment.ID),
-		Namespace:   deployment.Namespace.Name,
-		Project:     deployment.Project.Name,
-		Status:      pb.Deployment_DeploymentStatus(pb.Deployment_DeploymentStatus_value[deployment.Status]),
-		ScheduledAt: timestamppb.New(deployment.ScheduledAt),
-		StartedAt:   timestamppb.New(deployment.StartedAt),
-		ExitedAt:    timestamppb.New(deployment.ExitedAt),
-	}
+	res := deploymentAsProtobufStruct(deployment)
 
 	return res, nil
 }

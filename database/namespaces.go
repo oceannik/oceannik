@@ -24,7 +24,7 @@ func GetNamespaces(db *gorm.DB) (*[]Namespace, *gorm.DB) {
 	return &namespaces, result
 }
 
-func GetNamespaceByID(db *gorm.DB, id int) (*Namespace, *gorm.DB) {
+func GetNamespaceByID(db *gorm.DB, id uint) (*Namespace, *gorm.DB) {
 	var namespace Namespace
 	result := db.First(&namespace, id)
 
@@ -36,4 +36,19 @@ func GetNamespaceByName(db *gorm.DB, name string) (*Namespace, *gorm.DB) {
 	result := db.First(&namespace, "name = ?", name)
 
 	return &namespace, result
+}
+
+func UpdateNamespace(db *gorm.DB, name string, description string) (*Namespace, *gorm.DB) {
+	namespace, result := GetNamespaceByName(db, name)
+	if result.Error != nil {
+		return nil, result
+	}
+
+	if description != "" {
+		namespace.Description = description
+	}
+
+	result = db.Save(&namespace)
+
+	return namespace, result
 }

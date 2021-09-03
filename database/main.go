@@ -44,9 +44,9 @@ func InitData(db *gorm.DB) {
 	namespaceSecrets := []Secret{
 		{
 			NamespaceID: defaultNamespace.ID,
-			Key:         "OCEANNIK_HOSTS",
+			Key:         "HOSTS_FILE",
 			Value:       "<replace_with_your_own>",
-			Description: "File describing hosts and their roles. Make sure listed SSH keys have the exact same key names as in Oceannik's secrets.",
+			Description: "File describing hosts and their roles. Make sure listed SSH keys have the exact same key names as in Oceannik Secrets.",
 			Kind:        pb.SecretKind_FILE.String(),
 		},
 		{

@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 
 	"github.com/oceannik/oceannik/database"
 	pb "github.com/oceannik/oceannik/proto"
@@ -16,6 +17,13 @@ type NamespaceServiceServer struct {
 	db *gorm.DB
 }
 
+func namespaceAsProtobufStruct(namespace *database.Namespace) *pb.Namespace {
+	return &pb.Namespace{
+		Name:        namespace.Name,
+		Description: namespace.Description,
+	}
+}
+
 func (s *NamespaceServiceServer) ListNamespaces(r *pb.ListNamespacesRequest, stream pb.NamespaceService_ListNamespacesServer) error {
 	namespaces, result := database.GetNamespaces(s.db)
 	if result.Error != nil {
@@ -23,10 +31,7 @@ func (s *NamespaceServiceServer) ListNamespaces(r *pb.ListNamespacesRequest, str
 	}
 
 	for _, namespace := range *namespaces {
-		res := &pb.Namespace{
-			Name:        namespace.Name,
-			Description: namespace.Description,
-		}
+		res := namespaceAsProtobufStruct(&namespace)
 
 		if err := stream.Send(res); err != nil {
 			return err
@@ -36,19 +41,37 @@ func (s *NamespaceServiceServer) ListNamespaces(r *pb.ListNamespacesRequest, str
 }
 
 func (s *NamespaceServiceServer) GetNamespace(ctx context.Context, r *pb.GetNamespaceRequest) (*pb.Namespace, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetNamespace not implemented")
+	namespace, result := database.GetNamespaceByName(s.db, r.GetName())
+	if result.Error != nil {
+		return nil, status.Errorf(codes.Internal, "could not fetch namespace: %s", result.Error)
+	}
+
+	res := namespaceAsProtobufStruct(namespace)
+
+	return res, nil
 }
 
 func (s *NamespaceServiceServer) SetNamespace(ctx context.Context, r *pb.SetNamespaceRequest) (*pb.Namespace, error) {
-	namespace, result := database.CreateNamespace(s.db, r.Name, r.Description)
+	namespace, result := database.GetNamespaceByName(s.db, r.GetName())
+	if result.Error != nil {
+		// namespace does not exist, let's create a new one
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			namespace, result = database.CreateNamespace(s.db, r.GetName(), r.GetDescription())
+		}
+	} else {
+		// namespace does exist, do we have permission to overwrite it?
+		if r.GetOverwriteIfExists() {
+			namespace, result = database.UpdateNamespace(s.db, r.GetName(), r.GetDescription())
+		} else {
+			return nil, status.Errorf(codes.Internal, "namespace with this name already exists")
+		}
+	}
+
 	if result.Error != nil {
 		return nil, status.Errorf(codes.Internal, "could not create new namespace: %s", result.Error)
 	}
 
-	res := &pb.Namespace{
-		Name:        namespace.Name,
-		Description: namespace.Description,
-	}
+	res := namespaceAsProtobufStruct(namespace)
 
 	return res, nil
 }

@@ -61,9 +61,16 @@ func UpdateSecret(db *gorm.DB, namespaceName string, key string, value string, d
 	}
 	result := db.First(&secret, "namespace_id = ? AND key = ?", namespace.ID, key)
 
-	secret.Value = value
-	secret.Description = desc
-	secret.Kind = kind
+	// ugly but will suffice for now
+	if value != "" {
+		secret.Value = value
+	}
+	if desc != "" {
+		secret.Description = desc
+	}
+	if kind != "" {
+		secret.Kind = kind
+	}
 
 	db.Save(&secret)
 

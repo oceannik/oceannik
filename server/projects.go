@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 
 	"github.com/oceannik/oceannik/database"
 	pb "github.com/oceannik/oceannik/proto"
@@ -43,11 +44,32 @@ func (s *ProjectServiceServer) ListProjects(r *pb.ListProjectsRequest, stream pb
 }
 
 func (s *ProjectServiceServer) GetProject(ctx context.Context, r *pb.GetProjectRequest) (*pb.Project, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetProject not implemented")
+	project, result := database.GetProjectByName(s.db, r.GetName())
+	if result.Error != nil {
+		return nil, status.Errorf(codes.Internal, "could not fetch project: %s", result.Error)
+	}
+
+	res := projectAsProtobufStruct(project)
+
+	return res, nil
 }
 
 func (s *ProjectServiceServer) SetProject(ctx context.Context, r *pb.SetProjectRequest) (*pb.Project, error) {
-	project, result := database.CreateProject(s.db, r.Name, r.Description, r.RepositoryUrl, r.RepositoryBranch, r.ConfigPath)
+	project, result := database.GetProjectByName(s.db, r.GetName())
+	if result.Error != nil {
+		// project does not exist, let's create a new one
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			project, result = database.CreateProject(s.db, r.GetName(), r.GetDescription(), r.GetRepositoryUrl(), r.GetRepositoryBranch(), r.GetConfigPath())
+		}
+	} else {
+		// project does exist, do we have permission to overwrite it?
+		if r.GetOverwriteIfExists() {
+			project, result = database.UpdateProject(s.db, r.GetName(), r.GetDescription(), r.GetRepositoryUrl(), r.GetRepositoryBranch(), r.GetConfigPath())
+		} else {
+			return nil, status.Errorf(codes.Internal, "project with this name already exists")
+		}
+	}
+
 	if result.Error != nil {
 		return nil, status.Errorf(codes.Internal, "could not create a new project: %s", result.Error)
 	}
