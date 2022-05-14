@@ -10,8 +10,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/oceannik/oceannik/cli/utils"
 	"github.com/oceannik/oceannik/client/connectors"
+	"github.com/oceannik/oceannik/cmd/utils"
 	pb "github.com/oceannik/oceannik/proto"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
