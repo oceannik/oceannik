@@ -1,52 +1,56 @@
 module github.com/oceannik/oceannik
 
-go 1.17
+go 1.18
 
 require (
-	github.com/docker/docker v20.10.8+incompatible
-	github.com/mattn/go-sqlite3 v1.14.8 // indirect
+	github.com/docker/docker v20.10.16+incompatible
+	github.com/mattn/go-sqlite3 v1.14.13 // indirect
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/spf13/cobra v1.2.1
-	github.com/spf13/viper v1.8.1
-	google.golang.org/grpc v1.40.0
-	google.golang.org/protobuf v1.27.1
-	gorm.io/driver/sqlite v1.1.4
-	gorm.io/gorm v1.21.13
+	github.com/spf13/cobra v1.4.0
+	github.com/spf13/viper v1.11.0
+	google.golang.org/grpc v1.46.2
+	google.golang.org/protobuf v1.28.0
+	gorm.io/driver/sqlite v1.3.2
+	gorm.io/gorm v1.23.5
 )
 
 require (
-	github.com/Microsoft/go-winio v0.4.17 // indirect
-	github.com/containerd/containerd v1.5.5 // indirect
-	github.com/docker/distribution v2.7.1+incompatible // indirect
+	github.com/Microsoft/go-winio v0.5.2 // indirect
+	github.com/docker/distribution v2.8.1+incompatible // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.4.0 // indirect
-	github.com/fsnotify/fsnotify v1.4.9 // indirect
+	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
-	github.com/jinzhu/now v1.1.2 // indirect
-	github.com/magiconair/properties v1.8.5 // indirect
-	github.com/mattn/go-runewidth v0.0.9 // indirect
-	github.com/mitchellh/mapstructure v1.4.1 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
+	github.com/magiconair/properties v1.8.6 // indirect
+	github.com/mattn/go-runewidth v0.0.13 // indirect
+	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/moby/term v0.0.0-20210619224110-3f7ff695adc6 // indirect
 	github.com/morikuni/aec v1.0.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
-	github.com/opencontainers/image-spec v1.0.1 // indirect
-	github.com/pelletier/go-toml v1.9.3 // indirect
+	github.com/opencontainers/image-spec v1.0.3-0.20211202183452-c5a74bcca799 // indirect
+	github.com/pelletier/go-toml v1.9.5 // indirect
+	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
-	github.com/spf13/afero v1.6.0 // indirect
-	github.com/spf13/cast v1.3.1 // indirect
+	github.com/spf13/afero v1.8.2 // indirect
+	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
-	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4 // indirect
-	golang.org/x/sys v0.0.0-20210616094352-59db8d763f22 // indirect
-	golang.org/x/text v0.3.5 // indirect
-	google.golang.org/genproto v0.0.0-20210602131652-f16073e35f0c // indirect
-	gopkg.in/ini.v1 v1.62.0 // indirect
+	golang.org/x/net v0.0.0-20220513224357-95641704303c // indirect
+	golang.org/x/sys v0.0.0-20220513210249-45d2b4557a2a // indirect
+	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
+	google.golang.org/genproto v0.0.0-20220505152158-f39f71e6c8f3 // indirect
+	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
+	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20220512140231-539c8e751b99 // indirect
+	gotest.tools/v3 v3.2.0 // indirect
 )
