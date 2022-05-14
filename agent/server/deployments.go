@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/oceannik/oceannik/agent/database"
-	pb "github.com/oceannik/oceannik/proto"
+	pb "github.com/oceannik/oceannik/common/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"

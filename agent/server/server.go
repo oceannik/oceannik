@@ -11,7 +11,7 @@ import (
 	"github.com/oceannik/oceannik/agent/database"
 	"github.com/oceannik/oceannik/agent/runner"
 	"github.com/oceannik/oceannik/common/auth"
-	pb "github.com/oceannik/oceannik/proto"
+	pb "github.com/oceannik/oceannik/common/proto"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
