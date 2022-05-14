@@ -1,6 +1,6 @@
 package main
 
-import "github.com/oceannik/oceannik/cli/cmd"
+import "github.com/oceannik/oceannik/cmd/cmd"
 
 func main() {
 	cmd.Execute()
