@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/oceannik/oceannik/auth"
+	"github.com/oceannik/oceannik/common/auth"
 	pb "github.com/oceannik/oceannik/proto"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"

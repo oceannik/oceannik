@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/oceannik/oceannik/database"
+	"github.com/oceannik/oceannik/agent/database"
 	pb "github.com/oceannik/oceannik/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

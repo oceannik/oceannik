@@ -8,7 +8,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/oceannik/oceannik/cli/connectors"
+	"github.com/oceannik/oceannik/client/connectors"
 	pb "github.com/oceannik/oceannik/proto"
 	"github.com/spf13/cobra"
 )

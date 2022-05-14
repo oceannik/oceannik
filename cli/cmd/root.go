@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/oceannik/oceannik/cli/connectors"
+	"github.com/oceannik/oceannik/client/connectors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

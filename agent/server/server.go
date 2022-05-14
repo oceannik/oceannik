@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/docker/docker/api/types/mount"
-	"github.com/oceannik/oceannik/auth"
-	"github.com/oceannik/oceannik/database"
+	"github.com/oceannik/oceannik/agent/database"
+	"github.com/oceannik/oceannik/agent/runner"
+	"github.com/oceannik/oceannik/common/auth"
 	pb "github.com/oceannik/oceannik/proto"
-	"github.com/oceannik/oceannik/runner"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"

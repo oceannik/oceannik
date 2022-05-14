@@ -3,7 +3,7 @@ package cmd
 import (
 	"log"
 
-	server "github.com/oceannik/oceannik/server"
+	server "github.com/oceannik/oceannik/agent/server"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

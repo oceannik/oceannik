@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/oceannik/oceannik/database"
+	"github.com/oceannik/oceannik/agent/database"
 	pb "github.com/oceannik/oceannik/proto"
 
 	"google.golang.org/grpc/codes"
