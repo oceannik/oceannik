@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/oceannik/oceannik/common/auth"
-	pb "github.com/oceannik/oceannik/proto"
+	pb "github.com/oceannik/oceannik/common/proto"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 )

@@ -10,7 +10,7 @@ import (
 
 	"github.com/oceannik/oceannik/client/connectors"
 	"github.com/oceannik/oceannik/cmd/utils"
-	pb "github.com/oceannik/oceannik/proto"
+	pb "github.com/oceannik/oceannik/common/proto"
 	"github.com/spf13/cobra"
 )
 

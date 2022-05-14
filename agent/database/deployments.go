@@ -3,7 +3,7 @@ package database
 import (
 	"time"
 
-	pb "github.com/oceannik/oceannik/proto"
+	pb "github.com/oceannik/oceannik/common/proto"
 	"gorm.io/gorm"
 )
 
