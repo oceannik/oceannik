@@ -1,0 +1,85 @@
+name: Contribution
+
+on:
+  push:
+  pull_request:
+    branches: [ main ]
+
+env:
+  STATICCHECK_VERSION: latest
+  GOSEC_VERSION: latest
+
+jobs:
+  go-checks:
+    name: Go checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          cache: true
+          go-version-file: 'go.mod'
+
+      # Go vet
+      # https://pkg.go.dev/cmd/vet
+
+      - name: Run go vet
+        run: go vet ./...
+
+      # Gofmt
+      # https://pkg.go.dev/cmd/gofmt
+
+      - name: Run gofmt
+        if: always()
+        run: gofmt -d -s .
+
+      - name: Capture gofmt errors
+        if: always()
+        run: |
+          [[ "$(gofmt -l -s . | wc -l)" -gt 0 ]] && exit 1 || exit 0
+
+      # Staticcheck: Go linter
+      # https://staticcheck.io/
+
+      - name: Install staticcheck
+        if: always()
+        run: go install honnef.co/go/tools/cmd/staticcheck@${{ env.STATICCHECK_VERSION }}
+
+      - name: Run staticcheck
+        if: always()
+        run: staticcheck ./...
+
+      # Gosec: Security scanner
+      # https://github.com/securego/gosec
+
+      - name: Install gosec
+        if: always()
+        run: go install github.com/securego/gosec/v2/cmd/gosec@${{ env.GOSEC_VERSION }}
+
+      - name: Run gosec
+        if: always()
+        run: gosec ./...
+
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          cache: true
+          go-version-file: 'go.mod'
+
+      - name: Run tests
+        run: go test -v ./...
+
+      - name: Run test build
+        run: make build
