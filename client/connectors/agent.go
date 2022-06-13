@@ -1,6 +1,7 @@
 package connectors
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"time"
@@ -38,11 +39,14 @@ func (ac *AgentConnector) Open() {
 	dialTimeout := viper.GetInt("client.dial_timeout")
 	log.Printf("[Ocean] Connecting to Agent at %s (timeout: %d seconds)...", serverAddr, dialTimeout)
 
-	conn, err := grpc.Dial(
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	conn, err := grpc.DialContext(
+		ctx,
 		serverAddr,
 		grpc.WithTransportCredentials(tlsCreds),
 		grpc.WithBlock(),
-		grpc.WithTimeout(10*time.Second),
 	)
 	if err != nil {
 		log.Fatalf("[Ocean] Could not connect to the Agent! Are you sure the TLS certificates are valid? Error: %v", err)
