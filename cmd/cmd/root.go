@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/oceannik/oceannik/client/connectors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -20,7 +19,6 @@ var (
 
 var (
 	defaultTimeFormat = "Jan _2, 2006 15:04:05"
-	agentConnector    = connectors.AgentConnector{}
 )
 
 // rootCmd represents the base command when called without any subcommands
