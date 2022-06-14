@@ -29,6 +29,7 @@ func LoadTLSCreds(caCertPath string, certPath string, keyPath string, isServer b
 	tlsConfig := &tls.Config{
 		Certificates: []tls.Certificate{cert},
 		ServerName:   "host.oceannik.local",
+		MinVersion:   tls.VersionTLS13,
 	}
 
 	if isServer {
