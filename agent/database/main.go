@@ -75,5 +75,8 @@ func InitData(db *gorm.DB) {
 }
 
 func PerformAutoMigrate(db *gorm.DB) {
-	db.AutoMigrate(&Namespace{}, &Deployment{}, &Secret{}, &Project{})
+	err := db.AutoMigrate(&Namespace{}, &Deployment{}, &Secret{}, &Project{})
+	if err != nil {
+		panic("failed to auto-migrate the Oceannik SQL database.")
+	}
 }

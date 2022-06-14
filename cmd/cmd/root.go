@@ -50,6 +50,8 @@ func init() {
 	rootCmd.PersistentFlags()
 }
 
+// #nosec G104 -- Flags 'host', 'port' and 'namespace' are set in init()
+
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 	// Find home directory.

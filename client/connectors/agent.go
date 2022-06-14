@@ -55,7 +55,10 @@ func (ac *AgentConnector) Open() {
 }
 
 func (ac *AgentConnector) Close() {
-	ac.Conn.Close()
+	err := ac.Conn.Close()
+	if err != nil {
+		log.Fatalf("[Ocean] Connection to Agent could not be closed. Error: %v", err)
+	}
 }
 
 func (ac *AgentConnector) GetDeploymentServiceClient() pb.DeploymentServiceClient {

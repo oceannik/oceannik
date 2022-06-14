@@ -30,7 +30,9 @@ func (r *DockerRunner) ImagePull(containerImage string) error {
 
 	defer out.Close()
 
-	io.Copy(os.Stdout, out)
+	if _, err := io.Copy(os.Stdout, out); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -75,7 +77,9 @@ func (r *DockerRunner) RunContainer(containerName string, containerImage string,
 		return err
 	}
 
-	stdcopy.StdCopy(os.Stdout, os.Stderr, out)
+	if _, err := stdcopy.StdCopy(os.Stdout, os.Stderr, out); err != nil {
+		return err
+	}
 
 	return nil
 }
