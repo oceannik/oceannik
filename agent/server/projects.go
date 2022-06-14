@@ -34,7 +34,9 @@ func (s *ProjectServiceServer) ListProjects(r *pb.ListProjectsRequest, stream pb
 	}
 
 	for _, project := range *projects {
+		project := project
 		res := projectAsProtobufStruct(&project)
+
 		if err := stream.Send(res); err != nil {
 			return err
 		}

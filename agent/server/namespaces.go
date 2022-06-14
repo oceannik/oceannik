@@ -31,6 +31,7 @@ func (s *NamespaceServiceServer) ListNamespaces(r *pb.ListNamespacesRequest, str
 	}
 
 	for _, namespace := range *namespaces {
+		namespace := namespace
 		res := namespaceAsProtobufStruct(&namespace)
 
 		if err := stream.Send(res); err != nil {

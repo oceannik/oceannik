@@ -40,6 +40,7 @@ func (s *DeploymentServiceServer) ListDeployments(r *pb.ListDeploymentsRequest, 
 	}
 
 	for _, deployment := range *deployments {
+		deployment := deployment
 		res := deploymentAsProtobufStruct(&deployment)
 
 		if err := stream.Send(res); err != nil {
