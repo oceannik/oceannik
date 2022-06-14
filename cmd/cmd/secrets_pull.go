@@ -54,7 +54,7 @@ func secretsPullCmdRun(cmd *cobra.Command, args []string) {
 			secretName := secret.GetKey()
 			secretPath := fmt.Sprintf("%s/%s", secretsPullCmdSaveFilesToDir, secretName)
 			data := []byte(secret.GetValue())
-			err := ioutil.WriteFile(secretPath, data, 0644)
+			err := ioutil.WriteFile(secretPath, data, 0600)
 			if err != nil {
 				log.Fatal(err)
 			}

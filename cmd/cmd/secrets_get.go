@@ -97,7 +97,7 @@ func secretsGetCmdGetSingle(client pb.SecretServiceClient, ctx context.Context, 
 
 	if secretsGetCmdSaveValueToFilePath != "" {
 		data := []byte(secret.GetValue())
-		err := ioutil.WriteFile(secretsGetCmdSaveValueToFilePath, data, 0644)
+		err := ioutil.WriteFile(secretsGetCmdSaveValueToFilePath, data, 0600)
 		if err != nil {
 			log.Fatal(err)
 		}
