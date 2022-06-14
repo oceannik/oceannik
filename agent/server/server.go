@@ -18,7 +18,6 @@ import (
 	"gorm.io/gorm"
 
 	"net/http"
-	_ "net/http/pprof"
 )
 
 var (
