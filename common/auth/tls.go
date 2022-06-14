@@ -5,12 +5,13 @@ import (
 	"crypto/x509"
 	"fmt"
 	"io/ioutil"
+	"path/filepath"
 
 	"google.golang.org/grpc/credentials"
 )
 
 func LoadTLSCreds(caCertPath string, certPath string, keyPath string, isServer bool) (credentials.TransportCredentials, error) {
-	caCert, err := ioutil.ReadFile(caCertPath)
+	caCert, err := ioutil.ReadFile(filepath.Clean(caCertPath))
 	if err != nil {
 		return nil, err
 	}

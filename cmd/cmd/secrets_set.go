@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/oceannik/oceannik/client/connectors"
@@ -61,7 +62,7 @@ func secretsSetCmdRun(cmd *cobra.Command, args []string) {
 
 	if secretsSetCmdLoadValueFromFilePath != "" {
 		// user sets the value from file
-		b, err := ioutil.ReadFile(secretsSetCmdLoadValueFromFilePath)
+		b, err := ioutil.ReadFile(filepath.Clean(secretsSetCmdLoadValueFromFilePath))
 		if err != nil {
 			log.Fatal(err)
 		}
