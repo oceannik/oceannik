@@ -34,6 +34,7 @@ func (s *SecretServiceServer) ListSecrets(r *pb.ListSecretsRequest, stream pb.Se
 	}
 
 	for _, secret := range *secrets {
+		secret := secret
 		res := secretAsProtobufStruct(&secret)
 
 		if err := stream.Send(res); err != nil {
