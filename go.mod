@@ -3,7 +3,7 @@ module github.com/oceannik/oceannik
 go 1.18
 
 require (
-	github.com/docker/docker v20.10.16+incompatible
+	github.com/docker/docker v20.10.17+incompatible
 	github.com/mattn/go-sqlite3 v1.14.13 // indirect
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.5.0
