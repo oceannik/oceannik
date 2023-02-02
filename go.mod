@@ -11,7 +11,7 @@ require (
 	google.golang.org/grpc v1.52.3
 	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/sqlite v1.4.4
-	gorm.io/gorm v1.24.3
+	gorm.io/gorm v1.24.4
 )
 
 require (
