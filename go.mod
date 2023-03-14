@@ -9,7 +9,7 @@ require (
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.15.0
 	google.golang.org/grpc v1.52.3
-	google.golang.org/protobuf v1.28.1
+	google.golang.org/protobuf v1.29.1
 	gorm.io/driver/sqlite v1.4.4
 	gorm.io/gorm v1.24.5
 )
